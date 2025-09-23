@@ -63,6 +63,215 @@
             background-color: #6c757d;
         }
 
+        button#submitBtn {
+            background-color: #28a745; /* Green for success */
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modal and loading styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #28a745;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="signature-container">
+        <h2>Veuillez signer ci-dessous</h2>
+        <p>Utilisez votre doigt ou un stylet.</p>
+        <canvas id="signatureCanvas"></canvas>
+        <div class="buttons-container">
+            <button id="clearBtn">Effacer</button>
+            <button id="submitBtn">Soumettre la Signature</button>
+        </div>
+        <p class="disclaimer">
+            La signature électronique a la même valeur légale qu'une signature manuscrite.</p>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div id="loader" class="loader"></div>
+            <p id="modalText">Soumission en cours...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('signatureCanvas');
+            const ctx = canvas.getContext('2d');
+            const clearBtn = document.getElementById('clearBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const successModal = document.getElementById('successModal');
+            const loader = document.getElementById('loader');
+            const modalText = document.getElementById('modalText');
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+
+            function draw(e) {
+                if (!isDrawing) return;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+
+            function getTouchPos(canvasDom, touchEvent) {
+                const rect = canvasDom.getBoundingClientRect();
+                return {
+                    x: touchEvent.touches[0].clientX - rect.left,
+                    y: touchEvent.touches[0].clientY - rect.top
+                };
+            }
+
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDrawing = true;
+                const touchPos = getTouchPos(canvas, e);
+                [lastX, lastY] = [touchPos.x, touchPos.y];
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (!isDrawing) return;
+                const touchPos = getTouchPos(canvas, e);
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(touchPos.x, touchPos.y);
+                ctx.stroke();
+                [lastX, lastY] = [touchPos.x, touchPos.y];
+            });
+            canvas.addEventListener('touchend', () => isDrawing = false);
+            canvas.addEventListener('touchcancel', () => isDrawing = false);
+
+            clearBtn.addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            submitBtn.addEventListener('click', () => {
+                // Check if the canvas is empty
+                const isCanvasEmpty = !ctx.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0);
+                if (isCanvasEmpty) {
+                    alert("Veuillez d'abord dessiner une signature.");
+                    return;
+                }
+
+                // Show the modal
+                successModal.style.display = 'flex';
+                loader.style.display = 'block';
+                modalText.textContent = 'Soumission en cours...';
+
+                // Simulate a submission process with a delay
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    modalText.textContent = 'Informations prises en compte avec succès ✅';
+
+                    // Hide the modal after a few seconds
+                    setTimeout(() => {
+                        successModal.style.display = 'none';
+                    }, 2000);
+
+                }, 1500); // 1.5 second delay
+            });
+
+            // Close the modal if the user clicks outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === successModal) {
+                    successModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+background-color: #fafafa;
+            width: 100%;
+            height: 300px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .buttons-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        button#clearBtn {
+            background-color: #6c757d;
+        }
+
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
