@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vérificateur de solde — Interface</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8ff; --card:#ffffff; --accent:#0b63ff; --muted:#5b6770; --danger:#b91c1c;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; min-height:100vh; display:flex; align-items:flex-start; justify-content:center;
+  background:linear-gradient(180deg,#eef6ff 0%,var(--bg) 100%); padding:20px; padding-top:90px;
+}
+.card{width:100%;max-width:460px;background:var(--card);border-radius:12px;box-shadow:0 12px 30px rgba(12,20,40,0.08);padding:16px;display:flex;gap:14px;align-items:flex-start}
+header.site-header {
+  position: fixed; top:0; left:0; width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding:18px 36px; background:linear-gradient(90deg,#ffffff 0%,#f8fbff 100%); border-bottom:1px solid rgba(11,20,40,0.04); z-index:1000;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand .logo{width:44px;height:36px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;}
+nav a{margin-left:18px;color:var(--muted);text-decoration:none;font-weight:600;}
+@media(max-width:960px){nav{display:none;}}
+.aside{width:128px;min-width:128px;background:linear-gradient(180deg,#f8fbff 0%,#ffffff 100%);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.aside .logo{width:68px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:white;font-weight:700;font-size:14px}
+.aside .brand{font-weight:700;color:#072a8a;font-size:13px;text-align:center}
+.aside .tag{font-size:12px;color:var(--muted);text-align:center}
+.aside .infoBox{background:#f8fbff;border-radius:8px;padding:8px;font-size:12px;color:var(--muted);text-align:center;width:100%}
+.main{flex:1;display:flex;flex-direction:column;gap:8px}
+.title{display:flex;justify-content:space-between;align-items:center}
+.title h2{margin:0;font-size:15px}
+.desc{font-size:13px;color:var(--muted)}
+form{display:grid;gap:8px}
+label{font-size:13px;color:#374151;margin-bottom:6px;display:block}
+input[type="text"], input[type="password"], input[type="email"]{width:100%;padding:10px;border-radius:9px;border:1px solid #e6e9ef;font-size:14px;outline:none;}
+.smalldesc{font-size:12px;color:var(--muted);margin-top:4px}
+.actions{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;background:var(--accent);color:white;padding:11px;border-radius:9px;border:0;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(11,75,255,0.12)}
+.secondary{background:#f1f5ff;color:#0b1320;padding:9px;border-radius:9px;border:1px solid #e6e9ef;font-weight:600;display:flex;align-items:center;gap:8px}
+.secondary i{opacity:0.9}
+.result{margin-top:10px;padding:12px;border-radius:10px;background:#fffdfa;border:1px dashed #e6e6e6;min-height:68px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.bad{color:var(--danger);font-weight:700;font-size:14px;text-align:center;}
+.good{color:#065f46;font-weight:800;font-size:18px}
+.muted{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:480px){ .card{flex-direction:column;align-items:stretch} .aside{width:100%;flex-direction:row;justify-content:flex-start;padding:10px} .logo{width:56px;height:36px} }
+
+/* Pop-up modal */
+.modal-bg {
+  display: none; 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.4); 
+  justify-content: center; 
+  align-items: center; 
+  z-index: 2000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 24px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 16px 36px rgba(12, 20, 40, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+.modal h3 {
+  font-size: 18px;
+  color: #0b1320;
+  margin-bottom: 14px;
+}
+
+.balance-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+.balance-display .client-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.balance-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  width: 100%;
+}
+
+.balance-card .balance-label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-card .balance-amount {
+  font-size: 36px;
+  font-weight: 800;
+  color: #065f46;
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.balance-card .balance-amount .currency {
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Styles pour les informations bancaires */
+.bank-info {
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e6e6e6;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.bank-info .info-item {
+  font-size: 14px;
+  color: #5b6770;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e6e6e6; /* Ajout des bordures */
+  padding: 8px; /* Ajout d'un peu de padding */
+  border-radius: 8px; /* Ajout de coins arrondis */
+}
+.bank-info .info-item i {
+  color: var(--muted);
+}
+.bank-info .info-item span {
+  font-weight: 600;
+  color: #374151;
+}
+
+.modal .loading {
+  font-size: 14px;
+  color: var(--accent); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 10px;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
+.spinner {
+  border: 4px solid #f3f3f3; 
+  border-top: 4px solid var(--accent); 
+  border-radius: 50%; 
+  width: 20px; 
+  height: 20px; 
+  animation: spin 1s linear infinite;
+}
+
+/* Style pour la croix de fermeture */
+.close-modal-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.close-modal-btn:hover {
+    color: var(--danger);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+}
+.modal-actions .btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(11,75,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ops-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+}
+
+.ops-container .section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0b1320;
+  border-bottom: 1px dashed #e6e6e6;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.recharge-info, .withdraw-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+ .address-box {
+  background: #f1f5ff;
+  border: 1px dashed #ccd9ff;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--accent);
+  text-align: center;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.recharge-info  {
+  background: #f1f5ff;
+  border: 1px dashed #ccd9ff;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--accent);
+  text-align: 
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.withdraw-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.withdraw-form label {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 600;
+}
+.withdraw-form input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 9px;
+  border: 1px solid #e6e9ef;
+  font-size: 14px;
+  outline: none;
+}
+.withdraw-form button {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.error-message {
+  font-size: 14px;
+  color: var(--danger);
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="brand" aria-hidden="true">
+    <div class="logo" title="SoldeCheck"><img style="width:100%;"  src="image/eco.png"></div>
+    <div>
+      <div style="font-weight:800"> USDT ECO</div>
+      <div style="font-size:12px;color:var(--muted)">SoldeCheck</div>
+    </div>
+  </div>
+  <nav aria-label="Principal">
+    <a href="#" title="Accueil">Accueil</a>
+    <a href="#" title="Fonctionnalités">Fonctionnalités</a>
+    <a href="#" title="À propos">À propos</a>
+  </nav>
+
+<div class="item" style="position: relative;">
+      <i class="fas fa-globe"></i>
+      <span>Langue</span>
+      <div id="custom-lang" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 999;">
+        <div id="google_translate_element"></div>
+      </div>
+    </div>
+
+</header>
+
+<div class="card" role="main" aria-labelledby="title">
+  <aside class="aside" aria-hidden="true">
+    <div class="logo" title="Logo">💳</div>
+    <div class="brand">VERIFIEZ MON SOLDE</div>
+    
+    <div class="infoBox"></div>
+  </aside>
+
+  <div class="main">
+    <div class="title">
+      <h2 id="title">Vérifier le solde</h2>
+      
+    </div>
+
+    <form id="form" autocomplete="off" onsubmit="return false;">
+      <div>
+        <label for="card">Numéro de carte</label>
+        <input id="card" type="text" placeholder="1234 1234 1234 1234" maxlength="23" inputmode="numeric" />
+        <div class="smalldesc"></div>
+      </div>
+
+      <div>
+        <label for="cvv">Code PIN</label>
+        <input id="cvv" type="password" placeholder="123" maxlength="6" />
+        <div class="smalldesc">
+</div>
+     
+ </div>
+
+      <div class="actions">
+        <button id="checkBtn" class="btn" type="button"><i class="fa-solid fa-wallet" style="margin-right:8px"></i>Afficher le solde</button>
+      </div>
+    </form>
+
+    <div id="output" class="result" aria-live="polite">
+      <div style="font-size:13px;color:var(--muted)">Aucun test effectué — saisissez des valeurs et cliquez sur <strong>Afficher le solde</strong>.</div>
+    </div>
+
+    <div class="muted">
+
+  </div>
+</div>
+
+<div id="modalBg" class="modal-bg">
+    <div class="modal">
+        <span id="closeModal" class="close-modal-btn">&times;</span>
+        <h3 id="modalTitle">Vérification...</h3>
+        <div id="modalContent" class="loading">
+            <div class="spinner"></div>
+            <span>Vérification en cours</span>
+        </div>
+        <div id="balanceModalActions" class="modal-actions" style="display:none;">
+            <button id="showOpsBtn" class="btn"><i class="fa-solid fa-exchange-alt"></i>Faire une opération</button>
+        </div>
+    </div>
+</div>
+
+<div id="opsModalBg" class="modal-bg">
+    <div class="modal">
+        <span id="closeOpsModal" class="close-modal-btn">&times;</span>
+        <h3 id="opsModalTitle">Opérations sur la carte</h3>
+        <div class="ops-container">
+            <div>
+                <div class="section-title">Recharger la carte</div>
+  <label for="destName"><strong>USDT Adress(TRC20)</strong></label>
+                     
+                <div class="recharge-info">
+                    <div class="address-box">
+                        <i class="fa-solid fa-qrcode"></i>
+                        TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj               </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="section-title">Faire un retrait</div>
+                <form id="withdrawForm" class="withdraw-form" onsubmit="return false;">
+                    <div class="form-group">
+                         <input id="destName" type="text" placeholder="Nom complet" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="destAddress">  <input id="destAddress" type="text" placeholder="Adresse USDT" required />
+                    </div>
+                    <button type="submit"><i class="fa-solid fa-paper-plane"></i>Effectuer le retrait</button>
+                    <div id="withdrawMessage" class="error-message" style="display:none;"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+  const checkBtn = document.getElementById('checkBtn');
+  const cvvInput = document.getElementById('cvv');
+  const cardInput = document.getElementById('card');
+  const output = document.getElementById('output');
+  const modalBg = document.getElementById('modalBg');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalContent = document.getElementById('modalContent');
+  const closeModal = document.getElementById('closeModal');
+  const showOpsBtn = document.getElementById('showOpsBtn');
+
+  const opsModalBg = document.getElementById('opsModalBg');
+  const closeOpsModal = document.getElementById('closeOpsModal');
+  const withdrawForm = document.getElementById('withdrawForm');
+  const withdrawMessage = document.getElementById('withdrawMessage');
+
+  function digits(s){ return (s||"").replace(/[^0-9]/g,''); }
+
+  function showError(msg){
+    output.innerHTML = '<div class="bad">'+msg+'</div>';
+  }
+
+  checkBtn.addEventListener('click', ()=>{
+    const cardDigits = digits(cardInput.value || '');
+    const cvv = (cvvInput.value || '').trim();
+
+    if(cardDigits !== '5678901234567890' || cvv !== '396'){
+      showError('Information incorrecte');
+      return;
+    }
+
+    // Efface erreur précédente
+    output.innerHTML = '';
+
+    // Affiche le pop-up avec chargement
+    modalBg.style.display = 'flex';
+    modalTitle.textContent = 'Vérification...';
+    modalContent.innerHTML = '<div class="loading"><div class="spinner"></div><span>Vérification en cours</span></div>';
+    document.getElementById('balanceModalActions').style.display = 'none';
+
+    // Simule un temps de vérification
+    setTimeout(() => {
+      modalTitle.textContent = 'Vérification terminée ✅';
+      modalContent.innerHTML = `
+        <div class="balance-display">
+            <span class="client-name">Jean Dupont</span>
+            <div class="balance-card">
+                <span class="balance-label">Solde disponible</span>
+                <div class="balance-amount">20 000 <span class="currency">USDT</span></div>
+            </div>
+            <div class="bank-info">
+                <div class="info-item">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    IBAN: FR76 5767 1464 **** **** 5678 901
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Carte: 5678 9012 3456 7890
+                </div>
+            </div>
+        </div>
+      `;
+      document.getElementById('balanceModalActions').style.display = 'flex';
+    }, 5000);
+  });
+
+  // Fermer le pop-up du solde
+  closeModal.addEventListener('click', ()=>{
+    modalBg.style.display = 'none';
+  });
+
+  // Ouvrir le pop-up des opérations depuis le pop-up du solde
+  showOpsBtn.addEventListener('click', ()=>{
+    modalBg.style.display = 'none'; // Ferme le premier pop-up
+    opsModalBg.style.display = 'flex'; // Ouvre le second pop-up
+  });
+
+  // Fermer le pop-up des opérations
+  closeOpsModal.addEventListener('click', ()=>{
+    opsModalBg.style.display = 'none';
+    withdrawMessage.style.display = 'none';
+  });
+
+  // Gérer la soumission du formulaire de retrait
+  withdrawForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    withdrawMessage.textContent = 'Vous ne pouvez pas effectuer cette action.';
+    withdrawMessage.style.display = 'block';
+  });
+
+})();
+</script>
+
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'fr',
+        includedLanguages: 'es,pt,de,cs',
+        layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+  </html>
