@@ -1,245 +1,811 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page de Signature Professionnelle</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-        }
+    <title>Quick Validation | Security</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
 
-        .signature-container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 600px;
-        }
+/* --- 1. Variables and Reset (Eco Green Theme) --- */
+:root {
+    /* Green Theme */
+    --primary-color: #34a853; 
+    --secondary-color: #1d713c; 
+    --success-color: #34a853;
+    --error-color: #ea4335;
+    --text-color: #202124;
+    --background-light: #f1f3f4; 
+    --card-bg: #ffffff;
+    --border-color: #dadce0; 
+}
 
-        h2 {
-            color: #333;
-            margin-top: 0;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        #signatureCanvas {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #fafafa;
-            width: 100%;
-            height: 300px;
-            cursor: crosshair;
-            touch-action: none;
-        }
+body {
+    font-family: 'Inter', sans-serif; 
+    line-height: 1.3; 
+    color: var(--text-color);
+    background-color: var(--background-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px; 
+}
 
-        .buttons-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
+/* --- 2. Main Container --- */
+.container {
+    max-width: 380px; 
+    width: 100%;
+    background: var(--card-bg);
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+    transition: filter 0.3s ease-in-out; 
+}
 
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            color: #fff;
-            background-color: #007bff;
-        }
+/* Header */
+header {
+    text-align: center; 
+    margin-bottom: 20px; 
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
 
-        button#clearBtn {
-            background-color: #6c757d;
-        }
+.logo-container {
+    margin-bottom: 10px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        button#submitBtn {
-            background-color: #28a745; /* Green for success */
-        }
+.logo-icon {
+    /* Fingerprint Icon */
+    font-size: 2.5em; 
+    color: var(--primary-color); 
+}
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Modal and loading styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-        }
+h1 {
+    font-size: 1.2em; 
+    font-weight: 700;
+}
 
-        .modal-content {
-            background-color: #fefefe;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+header p {
+    font-size: 0.8em; 
+    color: #5f6368;
+    margin-top: 3px;
+}
 
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #28a745;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+/* --- 3. Verification Steps --- */
+.step {
+    padding: 15px 0; 
+    border-bottom: 1px dashed var(--border-color); 
+    margin-bottom: 0;
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+.step:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
 
-        .disclaimer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #888;
-        }
-    </style>
+.step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px; 
+}
+
+.step-title-group {
+    display: flex;
+    align-items: center;
+}
+
+.step-icon {
+    font-size: 1em; 
+    color: var(--primary-color);
+    margin-right: 8px; 
+    width: 18px; 
+    display: flex;
+    justify-content: center;
+}
+
+h2 {
+    font-size: 1em; 
+    font-weight: 600;
+}
+
+.status-badge {
+    font-size: 0.6em; 
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: var(--border-color);
+    color: #5f6368;
+}
+
+.status-badge.completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+/* --- 4. Buttons and Forms --- */
+.btn {
+    padding: 10px 18px; 
+    font-size: 0.85em;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+}
+
+.btn i {
+    margin-right: 8px; 
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.primary-btn:hover:not(:disabled) {
+    background-color: var(--secondary-color); 
+}
+
+/* Camera */
+.camera-feed {
+    height: 220px; 
+    width: 100%;
+    margin: 0 auto 10px; 
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    background: #000;
+    position: relative; 
+}
+
+.camera-feed video, .camera-feed canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.camera-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%; 
+    height: 80%; 
+    border: 2px dashed rgba(255, 255, 255, 0.7);
+    border-radius: 50%; 
+    pointer-events: none; 
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9em;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* ID Preview */
+.id-preview-container {
+    width: 100%;
+    height: 100px; /* Fixed height for preview */
+    margin-top: 5px;
+    margin-bottom: 10px; 
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    position: relative; 
+}
+
+.id-preview-container img {
+    max-width: 100%; 
+    max-height: 100%;
+    object-fit: contain; 
+    display: block; 
+}
+
+/* Placeholder icon style */
+.id-preview-container .placeholder-icon {
+    font-size: 3em; 
+    color: var(--border-color); 
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; 
+}
+.id-preview-container.empty .placeholder-icon {
+    display: block; 
+}
+.id-preview-container.empty img {
+    display: none; 
+}
+
+
+/* File Upload */
+.file-upload-group {
+    margin-bottom: 10px;
+}
+
+.custom-file-input-wrapper input[type="file"] {
+    display: none; 
+}
+
+.custom-file-label {
+    padding: 10px 12px; 
+    background-color: var(--primary-color);
+    color: white; 
+    font-weight: 600; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.custom-file-label:hover {
+    background-color: var(--secondary-color); 
+}
+
+.file-name {
+    margin-left: auto; 
+    font-size: 0.75em;
+    font-weight: 400;
+    color: #ffffff; 
+    max-width: 40%;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* Status Messages */
+.status-msg {
+    margin-top: 5px;
+    padding: 5px 10px; 
+    font-size: 0.75em;
+    border-radius: 4px;
+    background-color: var(--border-color);
+    color: var(--text-color);
+    min-height: 30px; 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    text-align: center;
+}
+
+.status-msg.success {
+    background-color: #e6f4ea; 
+    color: var(--success-color);
+}
+
+.status-msg.error {
+    background-color: #fce8e6; 
+    color: var(--error-color);
+}
+
+/* Final Submit */
+.final-submit {
+    text-align: center;
+    padding-top: 15px;
+    margin-top: 5px; 
+}
+
+.submission-simulation {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.loading-spinner {
+    border: 4px solid var(--border-color); 
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+    display: none; 
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.submission-simulation i {
+    font-size: 3em;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: none; 
+}
+
+/* 5. Pop-up Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.modal-overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-content i {
+    font-size: 4em;
+    color: var(--success-color);
+    margin-bottom: 15px;
+}
+
+.modal-content h3 {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 0.9em;
+    color: #5f6368;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+}
+
+</style>
 </head>
 <body>
+    <div class="container" id="main-container">
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-fingerprint logo-icon"></i> 
+            </div>
+            <h1>Secure Identity Verification</h1> 
+            <p>**2-Step** Process for Your Security.</p>
+        </header>
 
-    <div class="signature-container">
-        <h2>Veuillez signer ci-dessous</h2>
-        <p>Utilisez votre doigt ou un stylet.</p>
-        <canvas id="signatureCanvas"></canvas>
-        <div class="buttons-container">
-            <button id="clearBtn">Effacer</button>
-            <button id="submitBtn">Soumettre la Signature</button>
-        </div>
-        <p class="disclaimer">
-            La signature électronique a la même valeur légale qu'une signature manuscrite.</p>
+        <main class="verification-form">
+
+            <section id="step-selfie" class="step">
+                <div class="step-header">
+                    <div class="step-title-group">
+                        <span class="step-icon"><i class="fas fa-camera"></i></span>
+                        <h2>1. Photo</h2>
+                    </div>
+                    <span id="selfie-badge" class="status-badge pending"></span>
+                </div>
+                
+                <div class="camera-feed">
+                    <video id="webcam-video" autoplay playsinline style="display:none;"></video>
+                    <canvas id="photo-canvas" style="display:none;"></canvas>
+                    <div id="camera-placeholder" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background-color: var(--border-color); color: var(--text-color); cursor: default;">
+                        <i class="fas fa-video" style="font-size:1.5em; margin-bottom:5px;"></i>
+                        <span>Loading Camera...</span>
+                    </div>
+                    
+                    <div class="camera-frame">
+                         Frame your face
+                    </div>
+                </div>
+                
+                <button id="capture-photo" class="btn primary-btn" style="display:none;"><i class="fas fa-camera"></i>Capture Photo</button>
+                <p id="photo-status" class="status-msg">Awaiting camera permissions.</p>
+            </section>
+            
+            <section id="step-id" class="step">
+                <div class="step-header">
+                     <div class="step-title-group">
+                        <span class="step-icon"><i class="fas fa-id-card-clip"></i></span>
+                        <h2>2. Identity Document</h2>
+                    </div>
+                    <span id="id-badge" class="status-badge pending"></span>
+                </div>
+                
+                <div class="file-upload-group">
+                    <div class="custom-file-input-wrapper">
+                        <input type="file" id="id-recto" accept="image/jpeg, image/png" required>
+                        <label for="id-recto" class="custom-file-label"><i class="fas fa-upload"></i>Upload Front<span id="recto-file-name" class="file-name"></span></label>
+                    </div>
+                    <div id="recto-preview-container" class="id-preview-container empty">
+                        <img id="recto-preview-img" alt="Front ID Preview">
+                        <i class="fas fa-id-card placeholder-icon"></i> 
+                    </div>
+                    <p id="recto-status" class="status-msg">Max size: 5 MB</p>
+                </div>
+
+                <div class="file-upload-group">
+                    <div class="custom-file-input-wrapper">
+                        <input type="file" id="id-verso" accept="image/jpeg, image/png" required>
+                        <label for="id-verso" class="custom-file-label"><i class="fas fa-upload"></i>Upload Back<span id="verso-file-name" class="file-name"></span></label>
+                    </div>
+                    <div id="verso-preview-container" class="id-preview-container empty">
+                         <img id="verso-preview-img" alt="Back ID Preview">
+                         <i class="fas fa-id-card placeholder-icon"></i>
+                    </div>
+                    <p id="verso-status" class="status-msg">Max size: 5 MB</p>
+                </div>
+            </section>
+
+            <section class="final-submit">
+                <button id="submit-verification" class="btn primary-btn"><i class="fas fa-check"></i>Submit Verification</button>
+                
+                <div id="submission-simulation" class="submission-simulation" style="display:none;">
+                    <div id="loading-spinner" class="loading-spinner"></div>
+                    <p id="submission-message" class="status-msg" style="display:none;"></p>
+                </div>
+            </section>
+
+        </main>
+
     </div>
 
-    <div id="successModal" class="modal">
+    <div id="success-modal" class="modal-overlay">
         <div class="modal-content">
-            <div id="loader" class="loader"></div>
-            <p id="modalText">Soumission en cours...</p>
+            <i class="fas fa-check-circle"></i>
+            <h3>Submission Successful!</h3>
+            <p id="modal-message">Your information has been successfully sent to our verification service. You will receive an email confirmation.</p>
+            <button id="close-modal-btn">Close</button>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('signatureCanvas');
-            const ctx = canvas.getContext('2d');
-            const clearBtn = document.getElementById('clearBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            const successModal = document.getElementById('successModal');
-            const loader = document.getElementById('loader');
-            const modalText = document.getElementById('modalText');
 
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+  <script>
+// Corrected JS Code (Translated to English)
 
-            let isDrawing = false;
-            let lastX = 0;
-            let lastY = 0;
+// DOM Elements
+const mainContainer = document.getElementById('main-container');
+const video = document.getElementById('webcam-video');
+const canvas = document.getElementById('photo-canvas');
+const capturePhotoButton = document.getElementById('capture-photo');
+const cameraPlaceholder = document.getElementById('camera-placeholder');
+const photoStatus = document.getElementById('photo-status');
+const idRectoInput = document.getElementById('id-recto');
+const rectoFileName = document.getElementById('recto-file-name');
+const rectoStatus = document.getElementById('recto-status');
+const rectoPreviewContainer = document.getElementById('recto-preview-container');
+const rectoPreviewImg = document.getElementById('recto-preview-img');
+const idVersoInput = document.getElementById('id-verso');
+const versoFileName = document.getElementById('verso-file-name');
+const versoStatus = document.getElementById('verso-status');
+const versoPreviewContainer = document.getElementById('verso-preview-container');
+const versoPreviewImg = document.getElementById('verso-preview-img');
 
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#000';
 
-            function draw(e) {
-                if (!isDrawing) return;
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-                ctx.lineTo(e.offsetX, e.offsetY);
-                ctx.stroke();
-                [lastX, lastY] = [e.offsetX, e.offsetY];
-            }
+const submitButton = document.getElementById('submit-verification');
+const submissionSimulation = document.getElementById('submission-simulation');
+const loadingSpinner = document.getElementById('loading-spinner');
+const submissionMessage = document.getElementById('submission-message');
 
-            canvas.addEventListener('mousedown', (e) => {
-                isDrawing = true;
-                [lastX, lastY] = [e.offsetX, e.offsetY];
-            });
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', () => isDrawing = false);
-            canvas.addEventListener('mouseout', () => isDrawing = false);
+// Modal
+const successModal = document.getElementById('success-modal');
+const closeModalBtn = document.getElementById('close-modal-btn');
 
-            function getTouchPos(canvasDom, touchEvent) {
-                const rect = canvasDom.getBoundingClientRect();
-                return {
-                    x: touchEvent.touches[0].clientX - rect.left,
-                    y: touchEvent.touches[0].clientY - rect.top
-                };
-            }
+// Status Badge Elements
+const selfieBadge = document.getElementById('selfie-badge');
+const idBadge = document.getElementById('id-badge');
 
-            canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                isDrawing = true;
-                const touchPos = getTouchPos(canvas, e);
-                [lastX, lastY] = [touchPos.x, touchPos.y];
-            });
-            canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                if (!isDrawing) return;
-                const touchPos = getTouchPos(canvas, e);
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-                ctx.lineTo(touchPos.x, touchPos.y);
-                ctx.stroke();
-                [lastX, lastY] = [touchPos.x, touchPos.y];
-            });
-            canvas.addEventListener('touchend', () => isDrawing = false);
-            canvas.addEventListener('touchcancel', () => isDrawing = false);
+// Verification States
+let photoCaptured = false;
+let rectoUploaded = false; 
+let versoUploaded = false; 
+let stream = null; 
 
-            clearBtn.addEventListener('click', () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            });
+const maxFileSize = 5 * 1024 * 1024; // 5 MB
 
-            submitBtn.addEventListener('click', () => {
-                // Check if the canvas is empty
-                const isCanvasEmpty = !ctx.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0);
-                if (isCanvasEmpty) {
-                    alert("Veuillez d'abord dessiner une signature.");
-                    return;
-                }
+// Update Status Badges
+function updateState() {
+    // 1. Photo
+    if (photoCaptured) {
+        selfieBadge.textContent = 'OK';
+        selfieBadge.className = 'status-badge completed';
+    } else {
+        selfieBadge.textContent = ''; 
+        selfieBadge.className = 'status-badge pending';
+    }
 
-                // Show the modal
-                successModal.style.display = 'flex';
-                loader.style.display = 'block';
-                modalText.textContent = 'Soumission en cours...';
+    // 2. ID Document
+    if (rectoUploaded && versoUploaded) {
+        idBadge.textContent = 'OK';
+        idBadge.className = 'status-badge completed';
+    } else {
+        idBadge.textContent = ''; 
+        idBadge.className = 'status-badge pending';
+    }
+}
 
-                // Simulate a submission process with a delay
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    modalText.textContent = 'Informations prises en compte avec succès ✅';
 
-                    // Hide the modal after a few seconds
-                    setTimeout(() => {
-                        successModal.style.display = 'none';
-                    }, 2000);
+// 1. Camera Initialization
+async function initializeCamera() {
+    canvas.style.display = 'none';
+    video.style.display = 'block';
+    capturePhotoButton.innerHTML = '<i class="fas fa-camera"></i>Capture Photo'; 
 
-                }, 1500); // 1.5 second delay
-            });
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+    }
+    
+    cameraPlaceholder.style.display = 'flex';
+    video.style.display = 'none';
+    
+    // Reset photo state
+    photoCaptured = false; 
+    updateState();
 
-            // Close the modal if the user clicks outside of it
-            window.addEventListener('click', (event) => {
-                if (event.target === successModal) {
-                    successModal.style.display = 'none';
-                }
-            });
-        });
-    </script>
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+             video.play();
+             video.style.display = 'block';
+             cameraPlaceholder.style.display = 'none';
+             capturePhotoButton.style.display = 'inline-flex';
+             photoStatus.className = 'status-msg success';
+             photoStatus.textContent = "Camera active. Frame your face."; 
+        };
+    } catch (err) {
+        photoStatus.className = 'status-msg error';
+        photoStatus.textContent = "Camera blocked. Check permissions."; 
+        cameraPlaceholder.innerHTML = '<i class="fas fa-times-circle" style="font-size:1.5em; margin-bottom:5px; color:var(--error-color);"></i><span>Camera Blocked</span>';
+        capturePhotoButton.style.display = 'none';
+        video.style.display = 'none';
+        photoCaptured = false;
+        updateState();
+    }
+}
+
+// 2. Photo Capture Management
+capturePhotoButton.addEventListener('click', () => {
+    // If clicking to Retake
+    if (photoCaptured) {
+        initializeCamera();
+        return; 
+    }
+
+    // If capturing photo
+    if (!stream) {
+        photoStatus.className = 'status-msg error';
+        photoStatus.textContent = "Camera not active.";
+        return;
+    }
+
+    const context = canvas.getContext('2d');
+    
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+    }
+
+    // Display
+    video.style.display = 'none';
+    canvas.style.display = 'block';
+    capturePhotoButton.innerHTML = '<i class="fas fa-sync-alt"></i>Retake Photo'; 
+
+    // Update state
+    photoCaptured = true;
+    photoStatus.className = 'status-msg success';
+    photoStatus.textContent = "Photo captured! Retake if necessary.";
+    updateState();
+});
+
+
+// 3. File Upload Management
+function handleFileUpload(input, statusElement, statusVarName, fileNameElement, previewContainer, previewImg) {
+    let isSuccess = false;
+
+    if (input.files.length > 0) {
+        const file = input.files[0];
+        
+        if (file.size > maxFileSize) {
+            statusElement.className = 'status-msg error';
+            statusElement.textContent = `File too large (> 5 MB).`;
+            fileNameElement.textContent = "ERROR";
+            previewContainer.classList.add('empty'); // Show icon on error
+            previewImg.src = ''; 
+            isSuccess = false;
+        } else {
+            // Display preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.classList.remove('empty'); // Hide icon, show image
+            };
+            reader.readAsDataURL(file);
+
+            statusElement.className = 'status-msg success';
+            statusElement.textContent = `File ready: ${file.name}`;
+            fileNameElement.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
+            isSuccess = true;
+        }
+    } else {
+        fileNameElement.textContent = '';
+        statusElement.className = 'status-msg';
+        statusElement.textContent = 'Max size: 5 MB';
+        previewImg.src = ''; 
+        previewContainer.classList.add('empty'); // Show icon if empty
+        isSuccess = false;
+    }
+    
+    // Update global state variables
+    if (statusVarName === 'rectoUploaded') {
+        rectoUploaded = isSuccess;
+    } else if (statusVarName === 'versoUploaded') {
+        versoUploaded = isSuccess;
+    }
+
+    updateState(); 
+}
+
+// Event Listeners for file upload
+idRectoInput.addEventListener('change', () => handleFileUpload(idRectoInput, rectoStatus, 'rectoUploaded', rectoFileName, rectoPreviewContainer, rectoPreviewImg));
+idVersoInput.addEventListener('change', () => handleFileUpload(idVersoInput, versoStatus, 'versoUploaded', versoFileName, versoPreviewContainer, versoPreviewImg));
+
+
+// 4. Submission Management
+submitButton.addEventListener('click', () => {
+    
+    // Hide old messages at start
+    submissionSimulation.style.display = 'none';
+    submissionMessage.style.display = 'none';
+
+
+    // --- DETAILED VALIDATION LOGIC ---
+    let missingSteps = [];
+    if (!photoCaptured) {
+        missingSteps.push("the photo");
+    }
+    if (!rectoUploaded) { 
+        missingSteps.push("the Front side of the ID");
+    }
+    if (!versoUploaded) {
+        missingSteps.push("the Back side of the ID");
+    }
+
+    if (missingSteps.length > 0) {
+        let message;
+        if (missingSteps.length === 1) {
+            message = `❌ Please complete the missing part (${missingSteps[0]}) before submitting.`;
+        } else {
+            const last = missingSteps.pop();
+            message = `❌ Please complete the missing parts (${missingSteps.join(', ')} and ${last}) before submitting.`;
+        }
+        
+        submissionSimulation.style.display = 'block';
+        submissionMessage.style.display = 'flex';
+        submissionMessage.className = 'status-msg error';
+        submissionMessage.textContent = message;
+        
+        // Hide error message after 5 seconds
+        setTimeout(() => {
+            submissionSimulation.style.display = 'none';
+            submissionMessage.style.display = 'none';
+        }, 5000);
+        return; // REFUSE SUBMISSION
+    }
+    // ------------------------------------
+
+    // --- Start Submission Simulation (SUCCESS) ---
+    // Disable Submit button during process
+    submitButton.disabled = true;
+
+    submitButton.style.display = 'none';
+    submissionSimulation.style.display = 'block';
+    submissionMessage.style.display = 'flex';
+    
+    loadingSpinner.style.display = 'block';
+    submissionMessage.className = 'status-msg';
+    submissionMessage.textContent = 'Securely sending documents...';
+
+    // Simulation of sending (3 seconds duration)
+    setTimeout(() => {
+        
+        loadingSpinner.style.display = 'none';
+
+        // Show success modal
+        showSuccessModal();
+
+        // Disable the rest of the form
+        document.querySelectorAll('input, button:not(#close-modal-btn)').forEach(el => el.disabled = true);
+        
+        // Clean up submission display
+        submissionSimulation.style.display = 'none';
+        submissionMessage.style.display = 'none';
+        document.getElementById('capture-photo').style.display = 'none';
+        document.querySelector('.camera-frame').textContent = 'Validation complete';
+
+    }, 3000); 
+});
+
+// 5. Pop-up Modal Functions
+function showSuccessModal() {
+    mainContainer.style.filter = 'blur(3px)'; // Add blur effect
+    successModal.classList.add('show');
+}
+
+function closeSuccessModal() {
+    mainContainer.style.filter = 'none'; // Remove blur effect
+    successModal.classList.remove('show');
+}
+
+// Listener to close the modal
+closeModalBtn.addEventListener('click', closeSuccessModal);
+
+// Initialization on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeCamera();
+    updateState(); 
+
+    // Display placeholder icons by default
+    rectoPreviewContainer.classList.add('empty');
+    versoPreviewContainer.classList.add('empty');
+});
+</script>
+
 </body>
 </html>
