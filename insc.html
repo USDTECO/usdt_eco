@@ -52,16 +52,13 @@ label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-left:
 
 .input-style:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.1); }
 
-/* Suggestions de pays */
 .autocomplete-items {
   position: absolute; border: 1px solid var(--border); border-top: none;
   z-index: 99; top: 100%; left: 0; right: 0;
   background: white; border-radius: 0 0 12px 12px;
   max-height: 200px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
-.autocomplete-items div {
-  padding: 10px 16px; cursor: pointer; font-size: 14px;
-}
+.autocomplete-items div { padding: 10px 16px; cursor: pointer; font-size: 14px; }
 .autocomplete-items div:hover { background-color: #f1f5ff; color: var(--primary); }
 
 .btn-submit {
@@ -74,8 +71,9 @@ label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-left:
 .footer-link { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
 .footer-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
 
+/* Section Examen en cours */
 .success-overlay { display: none; text-align: center; padding: 20px 0; }
-.checkmark { font-size: 50px; color: #38a169; margin-bottom: 15px; }
+.status-icon { font-size: 64px; color: var(--primary); margin-bottom: 20px; }
 
 @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
 </style>
@@ -93,21 +91,21 @@ label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-left:
       <form onsubmit="submitForm(event)" autocomplete="off">
         <div class="form-grid">
           <div class="field-group">
-            <label>Nom(First name)</label>
+            <label>Nom (First name)</label>
             <input type="text" class="input-style" placeholder="Jean" required>
           </div>
           <div class="field-group">
-            <label>Nom(Last Name)</label>
+            <label>Prénom (Last Name)</label>
             <input type="text" class="input-style" placeholder="Dupont" required>
           </div>
           <div class="field-group full-width">
-            <label>Email/Correo</label>
+            <label>Email / Correo</label>
             <input type="email" class="input-style" placeholder="contact@domaine.com" required>
           </div>
           <div class="field-group full-width">
-            <label>Pays( Country/Pais)</label>
+            <label>Pays (Country / Pais)</label>
             <div style="position:relative;">
-              <input id="countryInput" type="text" class="input-style" placeholder="USA..." required>
+              <input id="countryInput" type="text" class="input-style" placeholder="Sélectionnez votre pays" required>
               <div id="autocompleteList" class="autocomplete-items"></div>
             </div>
           </div>
@@ -122,10 +120,15 @@ label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-left:
     </div>
 
     <div id="successSection" class="success-overlay">
-      <div class="checkmark"><i class="fa-solid fa-circle-check"></i></div>
-      <h2>Demande envoyée</h2>
-      <p style="color: var(--text-muted);">Nous analysons vos informations. Un conseiller vous contactera par email.</p>
-      <button class="btn-submit" onclick="window.location.reload()">Retour</button>
+      <div class="status-icon">
+        <i class="fa-regular fa-clock"></i>
+      </div>
+      <h2>Examen en cours</h2>
+      <p style="color: var(--text-muted); line-height: 1.6;">
+        Votre demande d'inscription a bien été reçue.<br>
+        Nos analystes examinent actuellement vos informations. Un email de confirmation vous sera envoyé prochainement.
+      </p>
+      <button class="btn-submit" style="background: #e0e5f2; color: var(--text-main); margin-top: 30px;" onclick="window.location.reload()">Retour à l'accueil</button>
     </div>
   </div>
 </div>
@@ -136,7 +139,6 @@ const countries = [
     "Belgique", "Bénin", "Brésil", "Burkina Faso", "Cameroun", "Canada", "Chili", "Chine", "Congo", "Côte d'Ivoire", "Danemark", "Égypte", "Espagne", 
     "États-Unis", "France", "Gabon", "Grèce", "Guinée", "Haïti", "Inde", "Italie", "Japon", "Luxembourg", "Mali", "Maroc", "Maurice", "Mexique", 
     "Monaco", "Niger", "Nigéria", "Norvège", "Pays-Bas", "Portugal", "Royaume-Uni", "Sénégal", "Suisse", "Tchad", "Togo", "Tunisie", "Turquie", "Vietnam"
-    // Note : Vous pouvez rajouter n'importe quel pays ici.
 ];
 
 const input = document.getElementById("countryInput");
@@ -165,11 +167,16 @@ document.addEventListener("click", (e) => { if (e.target !== input) list.innerHT
 function submitForm(event) {
   event.preventDefault();
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi...';
+  
+  // Petit effet de chargement sur le bouton pour l'action de clic
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Envoi...';
+  
+  // Transition vers le message final après 2 secondes
   setTimeout(() => {
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successSection').style.display = 'block';
-  }, 5000);
+  }, 2000);
 }
 </script>
 
