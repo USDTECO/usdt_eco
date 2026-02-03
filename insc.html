@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Inscription | USDT ECO</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #0b63ff;
+  --primary-dark: #074acc;
+  --bg: #f4f7fe;
+  --card: #ffffff;
+  --text-main: #1b2559;
+  --text-muted: #a3aed0;
+  --border: #e0e5f2;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; transition: all 0.2s ease-in-out; }
+
+body {
+  margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background-color: var(--bg); color: var(--text-main);
+  background-image: radial-gradient(at 0% 0%, rgba(11, 99, 255, 0.05) 0px, transparent 50%);
+  padding: 20px;
+}
+
+.signup-container { width: 100%; max-width: 500px; }
+
+.signup-card {
+  background: var(--card); border-radius: 24px; padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03); border: 1px solid var(--border);
+  position: relative;
+}
+
+.header { margin-bottom: 30px; }
+.header h1 { font-size: 26px; font-weight: 800; margin: 0; color: var(--text-main); }
+.header p { color: var(--text-muted); font-size: 15px; margin-top: 5px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.full-width { grid-column: span 2; }
+
+.field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-left: 2px; }
+
+.input-style {
+  width: 100%; padding: 12px 16px; border-radius: 12px;
+  border: 1px solid var(--border); background: #fdfdfd;
+  font-size: 15px; color: var(--text-main); outline: none;
+}
+
+.input-style:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.1); }
+
+/* Suggestions de pays */
+.autocomplete-items {
+  position: absolute; border: 1px solid var(--border); border-top: none;
+  z-index: 99; top: 100%; left: 0; right: 0;
+  background: white; border-radius: 0 0 12px 12px;
+  max-height: 200px; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.autocomplete-items div {
+  padding: 10px 16px; cursor: pointer; font-size: 14px;
+}
+.autocomplete-items div:hover { background-color: #f1f5ff; color: var(--primary); }
+
+.btn-submit {
+  width: 100%; margin-top: 25px; padding: 15px; border-radius: 12px;
+  border: none; background: var(--primary); color: white;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+.footer-link { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+.footer-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+.success-overlay { display: none; text-align: center; padding: 20px 0; }
+.checkmark { font-size: 50px; color: #38a169; margin-bottom: 15px; }
+
+@media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+</style>
+</head>
+<body>
+
+<div class="signup-container">
+  <div class="signup-card">
+    <div id="formSection">
+      <div class="header">
+        <h1>Inscription</h1>
+        <p>Rejoignez USDT ECO en quelques secondes.</p>
+      </div>
+
+      <form onsubmit="submitForm(event)" autocomplete="off">
+        <div class="form-grid">
+          <div class="field-group">
+            <label>Nom(First name)</label>
+            <input type="text" class="input-style" placeholder="Jean" required>
+          </div>
+          <div class="field-group">
+            <label>Nom(Last Name)</label>
+            <input type="text" class="input-style" placeholder="Dupont" required>
+          </div>
+          <div class="field-group full-width">
+            <label>Email/Correo</label>
+            <input type="email" class="input-style" placeholder="contact@domaine.com" required>
+          </div>
+          <div class="field-group full-width">
+            <label>Pays( Country/Pais)</label>
+            <div style="position:relative;">
+              <input id="countryInput" type="text" class="input-style" placeholder="USA..." required>
+              <div id="autocompleteList" class="autocomplete-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Créer mon compte</button>
+      </form>
+
+      <div class="footer-link">
+        Déjà un compte ? <a href="#">Connexion</a>
+      </div>
+    </div>
+
+    <div id="successSection" class="success-overlay">
+      <div class="checkmark"><i class="fa-solid fa-circle-check"></i></div>
+      <h2>Demande envoyée</h2>
+      <p style="color: var(--text-muted);">Nous analysons vos informations. Un conseiller vous contactera par email.</p>
+      <button class="btn-submit" onclick="window.location.reload()">Retour</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const countries = [
+    "Afghanistan", "Afrique du Sud", "Albanie", "Algérie", "Allemagne", "Andorre", "Angola", "Arabie Saoudite", "Argentine", "Australie", "Autriche", 
+    "Belgique", "Bénin", "Brésil", "Burkina Faso", "Cameroun", "Canada", "Chili", "Chine", "Congo", "Côte d'Ivoire", "Danemark", "Égypte", "Espagne", 
+    "États-Unis", "France", "Gabon", "Grèce", "Guinée", "Haïti", "Inde", "Italie", "Japon", "Luxembourg", "Mali", "Maroc", "Maurice", "Mexique", 
+    "Monaco", "Niger", "Nigéria", "Norvège", "Pays-Bas", "Portugal", "Royaume-Uni", "Sénégal", "Suisse", "Tchad", "Togo", "Tunisie", "Turquie", "Vietnam"
+    // Note : Vous pouvez rajouter n'importe quel pays ici.
+];
+
+const input = document.getElementById("countryInput");
+const list = document.getElementById("autocompleteList");
+
+input.addEventListener("input", function() {
+    const val = this.value;
+    list.innerHTML = "";
+    if (!val) return false;
+
+    const filtered = countries.filter(c => c.toLowerCase().startsWith(val.toLowerCase()));
+    
+    filtered.forEach(country => {
+        const item = document.createElement("div");
+        item.innerHTML = `<strong>${country.substr(0, val.length)}</strong>${country.substr(val.length)}`;
+        item.addEventListener("click", function() {
+            input.value = country;
+            list.innerHTML = "";
+        });
+        list.appendChild(item);
+    });
+});
+
+document.addEventListener("click", (e) => { if (e.target !== input) list.innerHTML = ""; });
+
+function submitForm(event) {
+  event.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Envoi...';
+  setTimeout(() => {
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successSection').style.display = 'block';
+  }, 5000);
+}
+</script>
+
+</body>
+</html>
