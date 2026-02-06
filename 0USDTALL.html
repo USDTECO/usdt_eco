@@ -3,309 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isdteco - USDT Premium</title>
+    <title>USDTECO - Final Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #6366f1;
-            --bg: #f8fafc;
-            --card-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            --text-dark: #1e293b;
-            --success: #10b981;
+            --primary: #4f46e5;
+            --primary-light: #eff6ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
             --danger: #ef4444;
-            --warning-dark: #c2410c;
-            --warning-light: #fff7ed;
+            --warning: #f59e0b;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #e2e8f0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
         }
 
         .app-container {
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            border-radius: 30px;
-            padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            position: relative;
-            min-height: 750px;
-            overflow: hidden;
-            box-sizing: border-box;
+            width: 100%; max-width: 400px; height: 800px;
+            background: var(--white); border-radius: 40px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
         }
 
-        /* --- WILLKOMMENS-BILDSCHIRM --- */
-        #welcomeScreen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 999;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 40px; box-sizing: border-box; text-align: center;
+        .screen { position: absolute; inset: 0; padding: 30px; display: none; flex-direction: column; box-sizing: border-box; }
+
+        /* SCREENS */
+        #splashScreen { display: flex; justify-content: center; align-items: center; text-align: center; z-index: 1000; background: white; }
+        #registrationScreen { z-index: 900; background: white; }
+        #loadingScreen { z-index: 1100; justify-content: center; align-items: center; background: white; }
+        #mainApp { background: var(--bg-light); z-index: 800; overflow-y: auto; }
+
+        /* FORMS */
+        .form-group { position: relative; margin-bottom: 18px; }
+        .form-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .form-group input { 
+            width: 100%; padding: 15px 15px 15px 45px; border: 1px solid #e2e8f0; 
+            border-radius: 14px; font-size: 1rem; outline: none; box-sizing: border-box; 
         }
 
-        .logo-large {
-            width: 70px; height: 70px; background: var(--primary);
-            border-radius: 20px; display: flex; align-items: center;
-            justify-content: center; color: white; font-size: 2rem; margin-bottom: 20px;
+        /* SCANNER */
+        .scanner-circle {
+            width: 130px; height: 130px; border: 4px solid var(--primary-light); border-radius: 50%;
+            position: relative; display: flex; justify-content: center; align-items: center;
         }
+        .scanner-line {
+            position: absolute; width: 100%; height: 2px; background: var(--primary);
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan { 0%, 100% { top: 0; opacity: 0; } 50% { top: 100%; opacity: 1; } }
 
-        #registrationForm { display: none; text-align: left; width: 100%; }
-
-        /* --- INTERFACE --- */
-        .main-content { display: none; }
-
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .user-info h2 { margin: 0; font-size: 1.2rem; color: var(--text-dark); text-transform: capitalize; }
-        
+        /* CARD & UI */
         .virtual-card {
-            background: var(--card-gradient);
-            height: 190px; border-radius: 20px; padding: 25px; color: white;
-            box-shadow: 0 15px 30px rgba(30, 41, 59, 0.3); margin-bottom: 30px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            height: 180px; border-radius: 28px; padding: 25px; color: white;
             display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 15px 25px rgba(79, 70, 229, 0.2); margin-bottom: 25px;
+        }
+        .pending-tag {
+            background: #fffbeb; color: var(--warning); padding: 6px 14px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .action-card { background: white; padding: 12px; border-radius: 15px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .action-card i { color: var(--primary); font-size: 1.3rem; margin-bottom: 5px; }
+
+        /* EMPTY HISTORY */
+        .empty-history {
+            margin-top: 30px; text-align: center; padding: 40px 20px;
+            border: 2px dashed #e2e8f0; border-radius: 25px; color: var(--text-muted);
         }
 
-        .card-number { font-size: 1.3rem; letter-spacing: 2px; font-family: monospace; margin: 20px 0; }
-
-        .balance-section { text-align: center; margin-bottom: 30px; }
-        .balance-amount { font-size: 2.2rem; font-weight: 800; color: var(--text-dark); }
+        /* MODALS & ALERTS */
+        .modal { display: none; position: absolute; inset: 0; background: var(--bg-light); z-index: 1200; padding: 30px; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;}
-        .action-btn { display: flex; flex-direction: column; align-items: center; border: none; background: none; cursor: pointer; }
-        .icon-box {
-            width: 55px; height: 55px; background: #eff6ff; color: var(--primary);
-            border-radius: 18px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; margin-bottom: 8px; transition: 0.3s;
-        }
-        .action-btn:hover .icon-box { background: var(--primary); color: white; }
-
-        /* --- ALARME --- */
-        #customAlert {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            width: 90%; background: #fef2f2; border: 1px solid #fee2e2; padding: 15px;
-            border-radius: 15px; display: flex; align-items: center; gap: 10px;
-            z-index: 2000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #customAlert.show { transform: translateX(-50%) translateY(0); }
-
-        /* --- MODALE --- */
-        .modal {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 100; padding: 30px; box-sizing: border-box;
-            border-radius: 30px; animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; }
-        .submit-btn { width: 100%; padding: 16px; background: var(--text-dark); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-
-        .qr-container {
-            width: 180px; height: 180px; margin: 15px auto; background: #fff;
-            padding: 10px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .qr-container img { max-width: 100%; height: auto; }
+        #customAlert { position: absolute; top: 20px; left: 20px; right: 20px; background: #fff1f2; border: 1px solid #fda4af; padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 12px; z-index: 2000; transform: translateY(-150%); transition: 0.4s; }
+        #customAlert.show { transform: translateY(0); }
+        .btn-primary { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-
     <div id="customAlert">
-        <i class="fas fa-circle-exclamation" style="color:var(--danger); font-size: 1.2rem;"></i>
-        <div>
-            <strong style="display:block; font-size: 0.85rem; color: #991b1b;">Transaktionsfehler</strong>
-            <span style="font-size: 0.75rem; color: #b91c1c;">Unzureichendes Guthaben für diesen Vorgang.</span>
-        </div>
-    </div>
-    
-    <div id="welcomeScreen">
-        <div id="introContent">
-            <div class="logo-large"><i class="fas fa-wallet"></i></div>
-            <h1 style="margin:0;">USDTECO</h1>
-            <p style="color:#64748b; margin:20px 0 30px;">Ihr sicheres Premium-USDT-Gateway.</p>
-            <button class="submit-btn" style="background:var(--primary);" onclick="showForm()">Karte erstellen</button>
-        </div>
-
-        <div id="registrationForm">
-            <h2 style="margin:0 0 20px;">Registrierung</h2>
-            <input type="text" id="regNom" placeholder="Nachname">
-            <input type="text" id="regPrenom" placeholder="Vorname">
-            <input type="email" id="regEmail" placeholder="E-Mail-Adresse">
-            <button class="submit-btn" onclick="finishRegistration()">Konto aktivieren</button>
-        </div>
+        <i class="fas fa-exclamation-circle" style="color:var(--danger)"></i>
+        <div><strong style="display:block; font-size:0.8rem;">Warnung</strong><span style="font-size:0.7rem;">Guthaben unzureichend für diese Transaktion.</span></div>
     </div>
 
-    <div id="mainApp" class="main-content">
-        <div class="header">
-            <div class="user-info">
-                <p>USDT-Wallet</p>
-                <h2 id="userFirstName">Benutzer</h2>
-            </div>
-            <div class="icon-box" style="width: 40px; height: 40px; border-radius: 50%; margin:0;"><i class="fas fa-user"></i></div>
+    <div id="splashScreen" class="screen">
+        <div style="background:var(--primary-light); width:80px; height:80px; border-radius:25px; display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem; margin-bottom:20px;"><i class="fas fa-shield-alt"></i></div>
+        <h1>USDTECO</h1>
+        <p style="color:var(--text-muted); margin-bottom: 10px;">Einfache USDT-Verwaltung.</p>
+        <p style="color:var(--text-muted); margin-bottom: 10px;">Gratis virtuelle Karte.</p>
+        <p style="color:var(--text-muted); margin-bottom: 10px;">Online-Zahlung & Transfer.</p>
+        <p style="color:var(--text-muted); margin-bottom: 10px;">Schnelle Erstellung.</p>
+        <p style="color:var(--text-muted); margin-bottom: 40px;">USDT-Kredit.</p>
+        <button class="btn-primary" id="startBtn" onclick="handleStart()">Karte erstellen</button>
+    </div>
+
+    <div id="registrationScreen" class="screen">
+        <h2>Konto erstellen</h2>
+        <div class="form-group"><i class="fas fa-user"></i><input type="text" id="regNom" placeholder="Ihr Nachname"></div>
+        <div class="form-group"><i class="fas fa-id-card"></i><input type="text" id="regPrenom" placeholder="Ihr Vorname"></div>
+        <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="Ihre E-Mail"></div>
+        <button class="btn-primary" onclick="processRegistration()">Weiter</button>
+    </div>
+
+    <div id="loadingScreen" class="screen">
+        <div class="scanner-circle">
+            <div class="scanner-line"></div>
+            <i class="fas fa-fingerprint" style="font-size:3rem; color:var(--primary);"></i>
+        </div>
+        <div id="loadText" style="margin-top:30px; font-weight:700; color:var(--text-main); letter-spacing: 1px;">SICHERUNG...</div>
+    </div>
+
+    <div id="mainApp" class="screen">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div><small style="color:var(--text-muted); font-weight:700; font-size:0.65rem;">KONTO AKTIV</small><h2 id="dispName" style="margin:0; font-size:1.2rem;">Benutzer</h2></div>
+            <div style="width:40px; height:40px; background:white; color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.05);"><i class="fas fa-user-shield"></i></div>
         </div>
 
         <div class="virtual-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="width:40px; height:28px; background:linear-gradient(135deg, #ffd700, #b8860b); border-radius:4px;"></div>
-                <i class="fas fa-eye-slash" id="eyeIcon" style="cursor:pointer;" onclick="toggleCardNumber()"></i>
-            </div>
-            <div class="card-number" id="cardNumber">**** **** **** 4290</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;"><strong>USDT ECO</strong><i class="fas fa-eye-slash" id="eye" onclick="toggleCard()" style="cursor:pointer;"></i></div>
+            <div style="font-family:monospace; font-size:1.3rem; letter-spacing:3px;" id="cNum">**** **** **** 4290</div>
             <div style="display:flex; justify-content:space-between; font-size:0.7rem; text-transform:uppercase;">
-                <div><small>Inhaber</small><br><span id="cardFirstName" style="font-weight:bold;">VORNAME</span></div>
-                <div><small>Gültig bis</small><br><span>12/28</span></div>
+                <div><small>Inhaber</small><br><strong id="cHold">NAME VORNAME</strong></div>
+                <div><small>Gültig bis</small><br><strong>12/28</strong></div>
             </div>
         </div>
 
-        <div class="balance-section">
-            <span style="color:#64748b; font-size:0.9rem;">Verfügbares Guthaben</span>
-             <div class="balance-amount" id="mainBalance">0,00 USDT</div>
+        <div style="text-align:center; margin-bottom:25px;">
+            <small style="color:var(--text-muted);">Verfügbar</small>
+            <h1 style="margin:5px 0; font-size:2.5rem; color:var(--text-main);">0,00 <span style="font-size:1.9rem; color:var(--text-muted);">USDT</span></h1>
+            <div style="display:none;" class="pending-tag"><i class="fas fa-clock fa-spin"></i> Ausstehend: +450,00 USDT</div>
         </div>
 
-        <div class="actions">
-            <button class="action-btn" onclick="ouvrirModale('modalDepot')">
-                <div class="icon-box"><i class="fas fa-plus"></i></div>
-                <span style="font-size:0.75rem; font-weight:bold;">Einzahlung</span>
-            </button>
-            <button class="action-btn" onclick="ouvrirModale('modalRetrait')">
-                <div class="icon-box"><i class="fas fa-arrow-up"></i></div>
-                <span style="font-size:0.75rem; font-weight:bold;">Auszahlung</span>
-            </button>
-            <button class="action-btn" onclick="ouvrirModale('modalVirement')">
-                <div class="icon-box"><i class="fas fa-exchange-alt"></i></div>
-                <span style="font-size:0.75rem; font-weight:bold;">Überweisung</span>
-            </button>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div class="action-card" onclick="openMod('mDepot')"><i class="fas fa-plus-circle"></i><br><span style="font-size:0.7rem; font-weight:700;">Einzahlen</span></div>
+            <div class="action-card" onclick="openMod('mRetrait')"><i class="fas fa-paper-plane"></i><br><span style="font-size:0.7rem; font-weight:700;">Senden</span></div>
+            <div class="action-card" onclick="openMod('mVirement')"><i class="fas fa-bank"></i><br><span style="font-size:0.7rem; font-weight:700;">Bank</span></div>
         </div>
 
-        <div class="transactions" style="margin-top:25px;">
-            <h3 style="font-size:0.9rem;">Aktivitäten</h3>
-            <div style="text-align:center; padding:20px; color:#94a3b8; border:2px dashed #f1f5f9; border-radius:20px;">
-                <p style="font-size:0.8rem;">Keine Transaktionen vorhanden</p>
-            </div>
+        <div class="empty-history">
+            <i class="fas fa-receipt" style="font-size: 1.5rem; opacity: 0.2; margin-bottom: 10px;"></i>
+            <p style="margin:0; font-size:0.8rem; font-weight:600;">Keine Aktivitäten</p>
+            <small style="font-size:0.7rem; opacity:0.6;">Ihre Transaktionen erscheinen hier.</small>
         </div>
     </div>
 
-    <div id="modalDepot" class="modal">
-        <div class="modal-header">
-            <h3>USDT Einzahlung</h3>
-            <span style="cursor:pointer;font-size:1.5rem;" onclick="fermerModale('modalDepot')">&times;</span>
+    <div id="mRetrait" class="modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;"><h3>USDT Auszahlung</h3><i class="fas fa-times" onclick="closeMod('mRetrait')"></i></div>
+        <div class="form-group"><i class="fas fa-user-tag"></i><input type="text" placeholder="Empfänger"></div>
+        <div class="form-group"><i class="fas fa-wallet"></i><input type="text" placeholder="TRC20 Adresse"></div>
+        <div class="form-group"><i class="fas fa-coins"></i><input type="number" placeholder="Betrag"></div>
+        <button class="btn-primary" onclick="triggerAlert('mRetrait')">Bestätigen</button>
+    </div>
+
+    <div id="mVirement" class="modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;"><h3>Banküberweisung</h3><i class="fas fa-times" onclick="closeMod('mVirement')"></i></div>
+        <div class="form-group"><i class="fas fa-building"></i><input type="text" placeholder="Begünstigter"></div>
+        <div class="form-group"><i class="fas fa-barcode"></i><input type="text" placeholder="IBAN"></div>
+        <div class="form-group"><i class="fas fa-euro-sign"></i><input type="number" placeholder="Betrag"></div>
+        <button class="btn-primary" onclick="triggerAlert('mVirement')">Senden</button>
+    </div>
+
+    <div id="mDepot" class="modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;"><h3>Einzahlung (TRC20)</h3><i class="fas fa-times" onclick="closeMod('mDepot')"></i></div>
+        <div style="text-align:center; background:white; padding:20px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.03);">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj">
+            <p style="font-family:monospace; font-size:0.7rem; color:var(--text-muted); margin-top:15px; word-break:break-all;">TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj</p>
         </div>
-        <div style="text-align:center;">
-            <p style="margin-bottom: 5px;">Netzwerk: <strong>TRC20</strong></p>
-            <div class="qr-container">
-                <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj" alt="QR-Code lädt...">
-            </div>
-            <input type="text" id="walletAddr" value="TTQy4URazYFovwi7uNYoDpbZ3aFiphasdj" readonly>
-            <button class="submit-btn" style="background:var(--success);" onclick="copyToClipboard()">Adresse kopieren</button>
-            <p style="font-size: 0.7rem; color: #64748b; margin-top: 15px;">
-                <i class="fas fa-info-circle"></i> Senden Sie ausschließlich USDT über das TRC20-Netzwerk an diese Adresse.
-            </p>
-        </div>
+        <button class="btn-primary" style="margin-top:20px;" onclick="alert('Kopiert!')">Adresse kopieren</button>
     </div>
-
-    <div id="modalRetrait" class="modal">
-        <div class="modal-header"><h3>USDT Auszahlung</h3><span style="cursor:pointer;font-size:1.5rem;" onclick="fermerModale('modalRetrait')">&times;</span></div>
-        <input type="text" placeholder="Name des Empfängers">
-        <input type="text" placeholder="Wallet-Adresse">
-        <input type="number" id="amtRetrait" placeholder="Betrag USDT">
-        <button class="submit-btn" onclick="checkBalance('amtRetrait', 'modalRetrait')">Auszahlung bestätigen</button>
-    </div>
-
-    <div id="modalVirement" class="modal">
-        <div class="modal-header"><h3>Banküberweisung</h3><span style="cursor:pointer;font-size:1.5rem;" onclick="fermerModale('modalVirement')">&times;</span></div>
-        <input type="text" placeholder="Name des Empfängers">
-        <input type="text" placeholder="IBAN">
-        <input type="number" id="amtVirement" placeholder="Betrag USDT">
-        <button class="submit-btn" onclick="checkBalance('amtVirement', 'modalVirement')">Überweisung senden</button>
-    </div>
-
 </div>
 
 <script>
-    // --- START-VERWALTUNG ---
     window.onload = function() {
-        const savedName = localStorage.getItem('isdteco_firstname');
-        if (savedName) {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            setupUI(savedName);
+        const n = localStorage.getItem('usdt_nom');
+        const p = localStorage.getItem('usdt_prenom');
+        
+        if (n && p) {
+            setupUI(n, p);
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+        } else {
+            document.getElementById('splashScreen').style.display = 'flex';
         }
     };
 
-    function showForm() {
-        document.getElementById('introContent').style.display = 'none';
-        document.getElementById('registrationForm').style.display = 'block';
+    function handleStart() {
+        document.getElementById('splashScreen').style.display = 'none';
+        document.getElementById('registrationScreen').style.display = 'flex';
     }
 
-    function finishRegistration() {
-        const prenom = document.getElementById('regPrenom').value.trim();
-        if (prenom === "") return alert("Vorname erforderlich");
-        localStorage.setItem('isdteco_firstname', prenom);
-        document.getElementById('welcomeScreen').style.display = 'none';
-        setupUI(prenom);
-    }
+    function processRegistration() {
+        const n = document.getElementById('regNom').value;
+        const p = document.getElementById('regPrenom').value;
+        if(!n || !p) return alert("Bitte füllen Sie alle Felder aus");
 
-    function setupUI(prenom) {
-        document.getElementById('userFirstName').innerText = prenom;
-        document.getElementById('cardFirstName').innerText = prenom.toUpperCase();
-        document.getElementById('mainApp').style.display = 'block';
-    }
+        localStorage.setItem('usdt_nom', n);
+        localStorage.setItem('usdt_prenom', p);
 
-    // --- LOGIK: GUTHABEN & ALARME ---
-    function checkBalance(inputId, modalId) {
-        const amount = parseFloat(document.getElementById(inputId).value);
-        if(!amount || amount <= 0) {
-            alert("Geben Sie einen gültigen Betrag ein");
-            return;
-        }
+        document.getElementById('registrationScreen').style.display = 'none';
+        document.getElementById('loadingScreen').style.display = 'flex';
 
-        fermerModale(modalId);
-        const alertBox = document.getElementById('customAlert');
-        alertBox.classList.add('show');
-        
+        const steps = ["VERSCHLÜSSELUNG...", "ÜBERPRÜFUNG...", "AKTIVIERUNG...", "ABSCHLUSS...", "Bitte warten..."];
+        steps.forEach((s, i) => { setTimeout(() => { document.getElementById('loadText').innerText = s; }, i * 1400); });
+
         setTimeout(() => {
-            alertBox.classList.remove('show');
-        }, 4000);
+            setupUI(n, p);
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+        }, 15000);
     }
 
-    // --- KARTENFUNKTIONEN ---
-    let isHidden = true;
-    function toggleCardNumber() {
-        const cardNum = document.getElementById('cardNumber');
-        const eye = document.getElementById('eyeIcon');
-        if(isHidden) {
-            cardNum.innerText = "4582 9012 3456 4290";
-            eye.classList.replace('fa-eye-slash', 'fa-eye');
-        } else {
-            cardNum.innerText = "**** **** **** 4290";
-            eye.classList.replace('fa-eye', 'fa-eye-slash');
-        }
-        isHidden = !isHidden;
+    function setupUI(n, p) {
+        document.getElementById('dispName').innerText = p;
+        document.getElementById('cHold').innerText = n.toUpperCase() + " " + p.toUpperCase();
     }
 
-    // --- MODALE & QR ---
-    function ouvrirModale(id) { 
-        document.getElementById(id).style.display = "block"; 
+    function openMod(id) { document.getElementById(id).style.display = 'block'; }
+    function closeMod(id) { document.getElementById(id).style.display = 'none'; }
+    function triggerAlert(m) { 
+        closeMod(m); 
+        const a = document.getElementById('customAlert');
+        a.classList.add('show'); 
+        setTimeout(() => a.classList.remove('show'), 4000); 
     }
     
-    function fermerModale(id) { 
-        document.getElementById(id).style.display = "none"; 
-    }
-
-    function copyToClipboard() {
-        const copyText = document.getElementById("walletAddr");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value);
-        alert("Adresse kopiert!");
+    let isHidden = true;
+    function toggleCard() {
+        isHidden = !isHidden;
+        document.getElementById('cNum').innerText = isHidden ? "**** **** **** 4290" : "4582 9012 3456 4290";
+        document.getElementById('eye').classList.toggle('fa-eye');
+        document.getElementById('eye').classList.toggle('fa-eye-slash');
     }
 </script>
-
 </body>
 </html>
